@@ -21,3 +21,6 @@ char="BinoyJolly"
 class(char)
 char2='Hello'
 typeof(char2)
+
+
+

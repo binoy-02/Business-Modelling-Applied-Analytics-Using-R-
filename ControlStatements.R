@@ -41,3 +41,32 @@ switch2 <- switch (obj,
 )
 
 print(switch2)
+
+# next and Break
+
+x<-1:10
+
+for (i in x) {
+  if (i==4) {
+    next
+  }
+  print(i)
+}
+
+for(i in x){
+  if(i == 4){
+    break
+  }
+  print(i)
+}
+
+ #repeat
+a<-1
+
+repeat{
+  if(a>=5){
+    break
+  }
+  print(a)
+  a<-a+1
+}
