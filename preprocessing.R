@@ -20,3 +20,4 @@ library(ggplot2)
 plot=ggplot(data = df,aes(x=name,y=score,colour = "blue"),shape = score,size = factor(age))+geom_point()
 
 plot+facet_grid(id~.)+facet_grid(.~score)
+
