@@ -3,10 +3,9 @@ data("iris")
 names(iris)
 head(iris)
 
+library(dplyr)
 #assign this to a dataframe
 df<-select(iris,c(1:4))
-
-
 
 
 library(factoextra)
@@ -35,6 +34,6 @@ library(ggfortify)
 autoplot(km,df,frame=TRUE)
 
 #mean of each cluster
-aggregate(mtcars,by=list(cluster=km$cluster),mean)
+aggregate(iris,by=list(cluster=km$cluster),mean)
 
 
