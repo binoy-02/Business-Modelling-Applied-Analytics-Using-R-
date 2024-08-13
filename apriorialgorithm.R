@@ -45,5 +45,31 @@ itemFrequencyPlot(trans,topN=10)
 rules<-apriori(trans,parameter = list(supp=0.3,conf=.5,maxlen=10,target="rules"))
 summary(rules)
 
+inspect(rules)
+
+Beer_rules_rhs<-apriori(trans,parameter = list(supp=0.3,conf=0.5,maxlen=10,minlen=2),appearance=list(lhs="beer",default="rhs"))
+
+inspect(Beer_rules_rhs)
 
 
+#visualization
+
+#1,.scatterplot
+library(arulesViz)
+plot(rules)
+plot(rules,measure="confidence")
+plot(rules,method="two-key plot")
+
+#2.interactive scatter plot
+#install.packages("plotly")
+library(plotly)
+plot(rules,engine="plotly")
+
+#3.Graph based visualization
+#install.packages("htmlwidgets")
+library(htmlwidgets)
+subrules=head(rules,n=10,by="confidence")
+plot(subrules,method="graph",engine="htmlwidgets")
+
+#4, parallel cordinate plot
+plot(subrules,method="paracoord")
