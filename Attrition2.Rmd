@@ -1,0 +1,150 @@
+---
+title: "Attrition"
+author: "BinoyJolly"
+date: "2024-08-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+```
+
+
+```{r}
+data=read.csv('C:/Binoy/Programming/dataset for R/attrition.csv')
+```
+
+
+```{r}
+head(data)
+```
+
+
+```{r}
+names(data)
+```
+
+
+```{r}
+sum(is.na(data))
+```
+
+
+```{r}
+```
+
+
+```{r}
+boxplot(data$MonthlyIncome,main="Boxplot of Monthly Income")
+```
+
+```{r}
+#removing outliers
+# calculate Q1,Q2 and IQR(Inter  Quartile range),Iqr is the range b/w Q3 and Q1 to detect outliers
+
+Q1 <- quantile(data$MonthlyIncome, 0.25)
+Q3<- quantile(data$MonthlyIncome, 0.75)
+IQR <- Q3-Q1
+data<- data %>% filter(MonthlyIncome >= (Q1-1.5 * IQR) & MonthlyIncome <= (Q3 + 1.5 *IQR)) 
+```
+```{r}
+#library(ggplot2)
+ggplot(data , aes(x=Attrition))+
+geom_bar(fill='orange')+
+labs(title="Attrition Distribution" , x="Attrition", y="Count")
+
+```
+```{r}
+ggplot(data,aes(x=JobSatisfaction, fill=Attrition))+
+geom_bar(position="dodge")+
+labs(title="Job Satisfaction VS Attrition" , x= "Job Satisfaction" , y="count")
+
+#hello
+```
+```{r}
+ggplot(data , aes(x=Attrition, y = MonthlyIncome))+
+geom_boxplot()+
+labs(title="MonthlyIncome vs Attrition" ,x="Attrition", y="Monthly Income")
+```
+```{r}
+ggplot(data , aes(x= Age , fill=Attrition))+
+  geom_histogram(position = "dodge" , bins=30)+
+  labs(title = "Age vs Attrition", x="Age Group", y="Count")
+```
+
+```{r}
+ggplot(data , aes(x= YearsAtCompany , fill=Attrition , colour = Attrition))+
+  geom_histogram()+
+  labs(title = "Distribution of years at Company")
+```
+```{r}
+library(dplyr)
+cordata<- data %>% select(c("DistanceFromHome","MonthlyIncome", 
+         "NumCompaniesWorked","TotalWorkingYears",
+         "YearsAtCompany","YearsInCurrentRole","YearsSinceLastPromotion"))
+cormatrix <- cor(cordata)
+round(cormatrix,2)
+```
+```{r}
+#install.packages("ggcorrplot")
+library(ggcorrplot)
+ggcorrplot(cormatrix,hc.order= TRUE, outline.color="white", lab=TRUE,color=c("#52c569","White","#fde725"),lab_size=2.5)+
+  labs(title = "Correlation of MNumeric Variables")
+```
+```{r}
+library(caTools)
+set.seed(123)
+sp=sample.split(data$Attrition,SplitRatio = 0.7)
+trainData = subset(data,sp=TRUE)
+testData=subset(data,sp=FALSE)
+nrow(trainData)
+```
+
+
+
+```{r}
+#Model Building
+
+trainData$Attrition=factor(trainData$Attrition)
+testData$Attrition=factor(testData$Attrition)
+
+
+```
+```{r}
+#random forest
+library(randomForest)
+rf_model<- randomForest(Attrition ~. ,data= trainData, ntree=100,importance=TRUE)
+rf_model
+```
+```{r}
+#prediction
+rf_pred <- predict(rf_model,testData)
+rf_pred
+```
+
+```{r}
+varImpPlot(rf_model)
+```
+
